@@ -91,7 +91,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      # The action scans only the pushed range, which breaks on the first push
+      # (there is no <sha>^ to diff against). Scanning the whole history is
+      # stricter and works on every push.
+      - name: install gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz \
+            | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
       - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gitleaks detect --source . --redact --no-banner --exit-code 1
