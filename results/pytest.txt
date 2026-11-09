@@ -1,0 +1,5 @@
+# pytest
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+26 passed, 23 warnings in 2.73s

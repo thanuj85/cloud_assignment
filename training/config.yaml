@@ -1,0 +1,26 @@
+# Everything that shapes a training run lives here. `make train` reads only this file.
+
+seed: 42
+learning_rate: 5.0e-4
+batch_size: 4
+epochs: 3
+max_seq_len: 256
+
+# Slice of the cleaned dataset used for training (the brief caps this at 1500).
+train_limit: 1500
+# `make train SUBSET=50` overrides train_limit from the command line.
+subset: 0
+
+base_model: EleutherAI/pythia-70m
+model_version: v1
+
+train_uri: s3://datasets/v1/train.jsonl
+output_dir: training/out
+
+# Library versions this run was produced with (make pin-check verifies them).
+library_versions:
+  python: "3.11.14"
+  torch: "2.1.2"
+  transformers: "4.36.2"
+  tokenizers: "0.15.0"
+  accelerate: "0.25.0"

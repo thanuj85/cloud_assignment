@@ -1,0 +1,97 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  MODEL_VERSION: v1
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff==0.2.1
+      - name: ruff check
+        run: ruff check worker training service infra tests
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: install CPU torch and test dependencies
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.1.2
+          pip install -r service/requirements.txt -r requirements-dev.txt
+      - name: pytest
+        run: pytest tests -q
+
+  evaluate:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: download the release asset and unpack the model
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p training/out/$MODEL_VERSION
+          gh release download "model-$MODEL_VERSION" --pattern "model-$MODEL_VERSION.tar.gz" --dir release
+          tar -xzf release/model-$MODEL_VERSION.tar.gz -C training/out/$MODEL_VERSION
+      - name: check the checksum against the Release asset
+        run: sha256sum -c <(sed "s|model-$MODEL_VERSION.tar.gz|release/model-$MODEL_VERSION.tar.gz|" release/model.sha256)
+      - name: install CPU torch
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.1.2
+          pip install -r service/requirements.txt
+      - name: score the student on validation.jsonl
+        run: |
+          python training/evaluate.py --model student --version "$MODEL_VERSION" --name "ci_student_$MODEL_VERSION"
+          python tools/score.py "results/ci_student_${MODEL_VERSION}_predictions.jsonl" data/validation.jsonl \
+            --out "results/ci_student_${MODEL_VERSION}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evaluation
+          path: results/ci_student_*
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: evaluate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          name: evaluation
+          path: results
+      - name: gate - json validity must be at least 95%
+        run: |
+          predictions=$(ls results/ci_student_*_predictions.jsonl)
+          python tools/score.py "$predictions" data/validation.jsonl --min-validity 95
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

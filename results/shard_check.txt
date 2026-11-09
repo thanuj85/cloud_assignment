@@ -1,0 +1,7 @@
+# check_shards.py on the 12-record smoke shards
+pool ids        3000
+labelled ids    12
+repeated        0 []
+missing         2988 ['C0013', 'C0014', 'C0015', 'C0016', 'C0017']
+not in pool     0 []
+shards DO NOT partition the pool

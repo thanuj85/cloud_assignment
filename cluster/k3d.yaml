@@ -1,0 +1,25 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: kdcloud
+servers: 1
+agents: 1
+kubeAPI:
+  hostIP: "127.0.0.1"
+  hostPort: "6445"
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=servicelb
+        nodeFilters:
+          - server:0
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true

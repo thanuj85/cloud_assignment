@@ -1,0 +1,25 @@
+[project]
+name = "cloud-assignment"
+version = "1.0.0"
+description = "Distilled command parser on a local k3d cloud (CS3081 mini project)"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "S", "PL", "RUF"]
+# Documented exceptions, not oversights:
+#   S101    assertions are the test framework
+#   S104    the service must bind 0.0.0.0 inside the container
+#   S108    tests use /tmp fixtures on purpose
+#   S311    the seeded shuffle in training must be a plain PRNG
+#   S603    the tests invoke the kit simulators by absolute path
+#   PLC0415 imports are deferred so `--help` and unit tests stay cheap
+#   E402    worker modules are imported after sys.path setup
+ignore = ["S101", "S104", "S108", "S311", "S603", "PLC0415", "E402", "PLR2004", "PLR0913", "PLR0915", "PLR0912", "N806"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

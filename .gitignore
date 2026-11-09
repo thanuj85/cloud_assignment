@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# model weights are published as a Release asset, never committed
+models/
+training/out/
+release/
+*.safetensors
+*.bin
+*.tar.gz
+
+# secrets
+.env
+k8s/secret.yaml
+!k8s/secret.example.yaml
+
+# generated evidence
+results/*.html

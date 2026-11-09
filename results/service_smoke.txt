@@ -1,0 +1,15 @@
+--- GET /healthz
+{"status":"alive"}
+HTTP 200
+--- GET /readyz
+{"status":"ready"}
+HTTP 200
+--- POST /parse (what is the weather in london)
+HTTP/1.1 500 Internal Server Error
+x-model-version: v1
+x-served-by: birams-MacBook-Air.local
+{"error":"invalid_model_output"}
+--- POST /parse with FAULT_INJECT=1
+scripts/smoke_service.sh: line 23: 37630 Terminated: 15          ${PYTHON:-python} service/app.py > /tmp/service.log 2>&1
+HTTP/1.1 500 Internal Server Error
+{"error":"invalid_model_output"}

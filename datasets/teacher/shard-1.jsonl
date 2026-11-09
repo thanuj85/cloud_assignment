@@ -1,0 +1,6 @@
+{"id": "C0002", "text": "i need a reminder at two hundred every day to check on my mother", "teacher_raw": "{\"intent\": \"recommendation_events\", \"date\": \"every day\", \"time\": \"two hundred\", \"place\": null}\n\n"}
+{"id": "C0004", "text": "is my calendar free for thursday", "teacher_raw": "{\"intent\": \"calendar_query\", \"date\": \"thursday\", \"time\": null, \"place\": null}\n"}
+{"id": "C0006", "text": "is my schedule free today", "teacher_raw": "{\"intent\": \"calendar_query\", \"date\": \"today\", \"time\": null, \"place\": null}\n"}
+{"id": "C0008", "text": "what is the time in perth", "teacher_raw": "{\"intent\": \"datetime_query\", \"date\": null, \"time\": null, \"place\": \"perth\"}\n"}
+{"id": "C0010", "text": "set a weekly meeting for friday nine am", "teacher_raw": "{\"intent\": \"calendar_set\", \"date\": \"friday\", \"time\": \"nine am\", \"place\": null}\n"}
+{"id": "C0012", "text": "alexa mark my calendar as unavailable today", "teacher_raw": "{\"intent\": \"calendar_set\", \"date\": \"today\", \"time\": null, \"place\": null}\n"}

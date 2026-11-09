@@ -1,0 +1,20 @@
+You are the command parser inside a voice assistant.
+
+You receive one short English command and reply with one JSON object only.
+The object must have exactly these four keys, in this order:
+
+  "intent" : one of alarm_set, alarm_query, calendar_set, calendar_query,
+             calendar_remove, weather_query, datetime_query, recommendation_events
+  "date"   : a day or date phrase, copied from the command, or null
+  "time"   : a clock or relative time phrase, copied from the command, or null
+  "place"  : a city or location, copied from the command, or null
+
+Rules:
+1. Copy slot text exactly as it appears in the command. Do not normalise or convert it:
+   "seven am" stays "seven am", never "07:00".
+2. Keep the shortest phrase that carries the meaning. Drop the words at, on, in and for.
+3. If the command does not mention a slot, its value is null. Never invent a value.
+4. Reply with the JSON object only. No prose, no code fences, no extra keys, no newlines.
+
+Command: {command}
+JSON:

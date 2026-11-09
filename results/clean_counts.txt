@@ -1,0 +1,10 @@
+# clean.py on the 12-record smoke shards
+input records                     12
+(a) invalid JSON                   2
+(b) wrong keys                     0
+(c) unknown intent                 0
+(d) slot not in command            0
+duplicate commands                 0
+kept                              10
+sum of headings                   12
+wrote datasets/v1/train.jsonl (10 records)
