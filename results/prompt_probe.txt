@@ -1,0 +1,17 @@
+# prompt probe: stop=["\n"], 15 commands from validation.jsonl via worker/label.py
+12/15 replies pass clean.py (80%); throughput 0.43/s
+V001 ok
+V002 ok
+V003 b
+V004 ok
+V005 ok
+V006 ok
+V007 ok
+V008 ok
+V009 b
+V010 ok
+V011 ok
+V012 ok
+V013 b
+V014 ok
+V015 ok

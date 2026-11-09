@@ -36,6 +36,10 @@ MODEL = "phi3.5"
 TEMPERATURE = 0.0
 SEED = 42
 NUM_CTX = 2048
+# The teacher sometimes appends an explanation after the JSON. Stopping at the
+# first newline keeps the reply to the object itself; whatever still slips
+# through is rejected by clean.py, never repaired.
+STOP = ["\n"]
 
 
 def prompt_template() -> str:
@@ -54,7 +58,7 @@ def ask_teacher(host: str, prompt: str, timeout: float = 300.0) -> str:
         "model": MODEL,
         "prompt": prompt,
         "stream": False,
-        "options": {"temperature": TEMPERATURE, "seed": SEED, "num_ctx": NUM_CTX},
+        "options": {"temperature": TEMPERATURE, "seed": SEED, "num_ctx": NUM_CTX, "stop": STOP},
     }
     response = requests.post(f"{host.rstrip('/')}/api/generate", json=payload, timeout=timeout)
     response.raise_for_status()

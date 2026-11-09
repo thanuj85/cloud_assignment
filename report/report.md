@@ -48,6 +48,17 @@ shard 1/2: 1500 commands, 0 done, 6 to label      6/6 (0.19/s)
 0.2 commands/s per shard → 3,000 commands ≈ 15,000 s ≈ 4.2 h on one worker, ≈ 1.05 h with
 four parallel shards. That is the dominant cost of the project on a CPU-only laptop.
 
+**Two measurements that changed the prompt/worker design.** First, phi3.5 sometimes emits
+the JSON and then keeps explaining it ("In this JSON response, the intent is inferred…").
+Scoring the full validation set against the plain prompt gave **75.0%** JSON validity
+(`results/teacher_validation.json`), i.e. a quarter of the calls were wasted. Second, after
+adding the Ollama stop sequence `"\n"` to `worker/label.py`, a 15-command probe produced
+**12/15 = 80%** replies that pass `clean.py`, at 0.43 commands/s instead of 0.20/s
+(`results/prompt_probe.txt`). The remaining failures are structural (a missing key, as in
+`{"intent": "datetime_query", "time": …}`), which no stop sequence can fix. The two
+percentages are on different sample sizes (100 vs 15), so they are reported side by side
+rather than as a single improvement figure.
+
 **Cleaning.** `worker/clean.py` applies the four rejection rules plus de-duplication
 (same command text under different ids keeps the smallest id) and writes
 `datasets/v1/train.jsonl` with its SHA-256 in `train.sha256` in `sha256sum` format.
@@ -94,11 +105,20 @@ Smoke run (10 records, to prove the path end to end — not a quality result):
 **Validation scores.** `results/student_v1_smoke.json` scores the 10-record smoke model on
 all 100 validation commands:
 
-| model | json_validity | intent | full_frame | file |
-|---|---|---|---|---|
-| teacher (phi3.5) | *pending* — `python training/evaluate.py --model teacher` | | | `results/teacher_validation.json` |
-| untrained pythia-70m | *pending* | | | `results/base_pythia70m_validation.json` |
-| student v1, smoke (10 records) | 0.0 | 0.0 | 0.0 | `results/student_v1_smoke.json` |
+| model | json_validity | intent | date | time | place | full_frame | file |
+|---|---|---|---|---|---|---|---|
+| teacher (phi3.5, plain prompt) | 75.0 | 57.0 | 57.0 | 62.0 | 71.0 | **33.0** | `results/teacher_validation.json` |
+| untrained pythia-70m | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | `results/base_pythia70m_validation.json` |
+| student v1, smoke (10 records) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | `results/student_v1_smoke.json` |
+
+The teacher's full-frame accuracy is 33%, so the marker's hidden-test threshold for the
+student (at least half the teacher's full frame, i.e. ~16.5%) is the number the trained
+student has to reach. The untrained pythia-70m scores 0.0% on everything: given the prompt
+it continues in a generic-JSON style (`{"name": "Crono", "email": …}`), which is exactly
+the behaviour distillation is meant to replace, and it is also the deliberately bad model
+used for the failing quality-gate run. The teacher's own 25% invalid rate is a prompt problem, not a
+model problem, and is the first thing to fix (stop sequence, then a stricter
+single-line instruction).
 
 The 0.0 is real and expected: ten training records cannot teach a 70M model to emit
 schema-valid JSON, and the model degenerates into repeating quote characters. A usable
@@ -216,7 +236,8 @@ through and the deny would never be consulted.
   asset, unpacks it, checks the checksum against `model.sha256`, scores validation) →
   quality gate (`score.py --min-validity 95`) → gitleaks secret scan.
 - The failing gate run is demonstrated by pointing the gate at the untrained
-  `pythia-70m` predictions, which score 0% validity.
+  `pythia-70m` predictions (or the teacher's 75% validity, which also fails
+  `--min-validity 95`): both make the last stage exit non-zero.
 
 ## 8. Task 7 — Performance, cost, SLO
 

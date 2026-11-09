@@ -82,11 +82,14 @@ Measured on this machine (8 GB RAM, CPU only). See `results/` and `report/report
 
 | Measurement | Value | Evidence |
 |---|---|---|
-| Teacher labelling rate (phi3.5, 2 shards in parallel) | see `results/labelling_rate.txt` | worker logs |
-| Cleaning counts (12-record smoke run) | see `results/clean_counts.txt` | `worker/clean.py` output |
-| Unit tests | 26 passed | `results/pytest.txt` |
+| Teacher labelling rate (phi3.5, 2 shards in parallel) | 0.19–0.20 cmd/s per shard | `results/labelling_rate.txt` |
+| Teacher validation, plain prompt | json_validity 75.0%, full_frame 33.0% | `results/teacher_validation.json` |
+| Prompt probe with `stop=["\n"]` | 12/15 replies clean (80%), 0.43 cmd/s | `results/prompt_probe.txt` |
+| Cleaning counts (12-record smoke run) | 12 in → 2 rejected (a) → 10 kept | `results/clean_counts.txt` |
+| Unit tests | 26 passed, ruff clean | `results/pytest.txt`, `results/ruff.txt` |
 | NACL sample packets | 6/6 correct | `results/nacl_check.txt` |
-| Service contract | see `results/service_smoke.txt` | curl output |
+| Validation: teacher / untrained base | full_frame 33.0% / 0.0% | `results/teacher_validation.json`, `results/base_pythia70m_validation.json` |
+| Service contract | /healthz 200, /readyz 200, /parse 500 `invalid_model_output` (smoke model), headers present | `results/service_smoke.txt` |
 
 ## Limitations
 
