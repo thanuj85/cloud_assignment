@@ -17,7 +17,7 @@ commands are in the README.
 - [x] `network/subnets.md`, `network/nacl.json` — 6/6 sample packets, 4/4 extra cases
 - [x] 26 tests, ruff clean, `results/` evidence, `.github/workflows/ci.yml`
 - [x] Teacher validation on all 100 commands: validity 75.0%, full_frame 33.0%
-- [x] `README.md`, `AI_USE.md`, `report/report.md`
+- [x] `README.md`, `AI_USE.md`, `report/report.md`, `report/report.pdf` (6 pages, `make report`)
 
 ## Still to run (needs hours of CPU, or a cluster)
 

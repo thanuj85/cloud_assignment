@@ -13,7 +13,7 @@ export AWS_SECRET_ACCESS_KEY ?= any
 export S3_ENDPOINT ?= $(S3_LOCAL)
 export AWS_DEFAULT_REGION ?= us-east-1
 
-.PHONY: help venv lint test train train-subset publish up down cluster storage teacher clean-data image deploy loadtest subnet nacl evidence
+.PHONY: help venv lint test train publish up down cluster teacher clean-data image deploy loadtest subnet nacl evidence report
 
 help:
 	@grep -E '^[a-z-]+:.*?##' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -83,6 +83,9 @@ subnet: ## show the subnet plan
 
 nacl: ## check the NACL against the sample packets
 	$(PY) tools/nacl_sim.py network/nacl.json network/packets_sample.jsonl --check
+
+report: ## build report/report.pdf from report/report.md
+	./scripts/make_report.sh
 
 evidence: ## collect pod, cluster and resource evidence into results/
 	$(KUBECTL) -n app get pods -o wide > results/pods.txt

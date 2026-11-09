@@ -63,6 +63,7 @@ make publish VERSION=v1               # models/v1/ + release/model-v1.tar.gz
 make up                               # image + deploy (<= 3 commands from a fresh clone)
 make loadtest                         # the standard Locust run
 make evidence                         # pods, top, logs, hpa -> results/
+make report                           # report/report.md -> report/report.pdf
 make down                             # delete the cluster
 ```
 
