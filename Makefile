@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 PY ?= .venv/bin/python
-IMAGE ?= akshaya33/command-parser
+IMAGE ?= thanuj85/command-parser
 TAG ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo dev)
 SUBSET ?= 0
 VERSION ?= v1

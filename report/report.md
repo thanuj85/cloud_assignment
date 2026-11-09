@@ -1,6 +1,6 @@
 # Distilled Command Parser on a Local Cloud — Report
 
-**Paladugula Akshaya, 230101013** · Cloud Computing (CS3081) · https://github.com/Akshaya33-P/cloud-assignment
+**Devarayi Thanuj, 230101003** · Cloud Computing (CS3081) · https://github.com/thanuj85/cloud_assignment
 
 Every number below was produced by running the code in this repository on the machine
 described in Section 1. Where a measurement has not been taken yet, the row says

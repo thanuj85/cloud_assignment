@@ -2,7 +2,7 @@
 
 Assignment: Cloud Computing (CS3081) mini project — knowledge distillation and deployment of a
 lightweight command parser.
-Student: Paladugula Akshaya, 230101013.
+Student: Devarayi Thanuj, 230101003.
 
 ## Tools used
 

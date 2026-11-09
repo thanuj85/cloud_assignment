@@ -1,7 +1,7 @@
 # Distilled Command Parser on a Local Cloud
 
-**Paladugula Akshaya** · 230101013
-GitHub: https://github.com/Akshaya33-P/cloud-assignment
+**Devarayi Thanuj** · 230101003
+GitHub: https://github.com/thanuj85/cloud_assignment
 
 A 70M-parameter command parser distilled from the phi3.5 teacher and served on a local
 k3d cluster, with SeaweedFS object storage, autoscaling, probes, a NACL plan and a CI

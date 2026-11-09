@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: parser
-          image: akshaya33/command-parser:IMAGE_TAG
+          image: thanuj85/command-parser:IMAGE_TAG
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
